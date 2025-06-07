@@ -15,3 +15,4 @@ original_datasets = [df_train, df_test]
 model_input_datasets = []
 model_input_datasets.append(process_datasets.pattern_1(*original_datasets))
 model_input_datasets.append(process_datasets.pattern_2(*original_datasets))
+model_input_datasets.append(process_datasets.pattern_3(*original_datasets))
