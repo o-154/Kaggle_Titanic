@@ -23,7 +23,8 @@ model_input_datasets.append(specific_processes.pattern_3(*original_datasets))
 ### 予測の実行
 accuracy_list = []
 for i in range(len(model_input_datasets)):
-    accuracy = models.random_forest(
+    i = 2 # for test
+    accuracy = models.newral_network(
         model_input_datasets[i][0],
         model_input_datasets[i][1],
         model_input_datasets[i][2],
