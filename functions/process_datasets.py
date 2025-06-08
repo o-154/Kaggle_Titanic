@@ -7,6 +7,9 @@ def pattern_1(df_train, df_test):
     train_y = df_train['Survived']
     train_x = df_train.drop(columns=['Survived'])
 
+    ### テストデータのIDカラムのみ取得
+    id_test = df_test['PassengerId']
+
     ### 学習データとテストデータの結合
     all_x = pd.concat([train_x, df_test])
 
@@ -68,8 +71,7 @@ def pattern_1(df_train, df_test):
     ### 学習データとテストデータに再分割（参考：Kaggleで勝つ P138）
     processed_train_x = all_x.iloc[:train_x.shape[0], :].reset_index(drop=True)
     processed_test_x = all_x.iloc[train_x.shape[0]:, :].reset_index(drop=True)
-
-    processed_datasets = [processed_train_x, train_y, processed_test_x]
+    processed_datasets = [processed_train_x, train_y, processed_test_x, id_test]
     return processed_datasets
 
 
@@ -78,6 +80,9 @@ def pattern_2(df_train, df_test):
     ### 学習データをxとyに分割
     train_y = df_train['Survived']
     train_x = df_train.drop(columns=['Survived'])
+
+    ### テストデータのIDカラムのみ取得
+    id_test = df_test['PassengerId']
 
     ### 学習データとテストデータの結合
     all_x = pd.concat([train_x, df_test])
@@ -187,8 +192,7 @@ def pattern_2(df_train, df_test):
     ### 学習データとテストデータに再分割（参考：Kaggleで勝つ P138）
     processed_train_x = all_x.iloc[:train_x.shape[0], :].reset_index(drop=True)
     processed_test_x = all_x.iloc[train_x.shape[0]:, :].reset_index(drop=True)
-
-    processed_datasets = [processed_train_x, train_y, processed_test_x]
+    processed_datasets = [processed_train_x, train_y, processed_test_x, id_test]
     return processed_datasets
 
 
@@ -196,6 +200,9 @@ def pattern_3(df_train, df_test):
     ### 学習データをxとyに分割
     train_y = df_train['Survived']
     train_x = df_train.drop(columns=['Survived'])
+
+    ### テストデータのIDカラムのみ取得
+    id_test = df_test['PassengerId']
 
     ### 学習データとテストデータの結合
     all_x = pd.concat([train_x, df_test])
@@ -289,7 +296,7 @@ def pattern_3(df_train, df_test):
     ### Fare
     ## 全体の平均値で補間する
     def process_fares(all_x):
-        all_x.Fare.fillna(all_x.iloc[:891].Fare.mean(), inplace=True)
+        all_x['Fare'] = all_x['Fare'].fillna(all_x.iloc[:891].Fare.mean())
         return all_x
     all_x = process_fares(all_x)
 
@@ -297,7 +304,7 @@ def pattern_3(df_train, df_test):
     ## 1文字目を採用する
     def process_cabin(all_x):
         # 1. 欠損値を'U'で補間する
-        all_x['Cabin'].fillna('U', inplace=True)
+        all_x['Cabin'] = all_x['Cabin'].fillna('U')
         # 2. カラムの内容を、1文字目に変換する
         all_x['Cabin'] = all_x['Cabin'].map(lambda c: c[0])
         return all_x
@@ -315,5 +322,5 @@ def pattern_3(df_train, df_test):
     ### 学習データとテストデータに再分割（参考：Kaggleで勝つ P138）
     processed_train_x = all_x.iloc[:train_x.shape[0], :].reset_index(drop=True)
     processed_test_x = all_x.iloc[train_x.shape[0]:, :].reset_index(drop=True)
-    processed_datasets = [processed_train_x, train_y, processed_test_x]
+    processed_datasets = [processed_train_x, train_y, processed_test_x, id_test]
     return processed_datasets
