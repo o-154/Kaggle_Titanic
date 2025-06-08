@@ -1,6 +1,7 @@
 ### モジュールのインポート
 import pandas as pd
-import numpy as np
+# import numpy as np
+from . import general_processes
 
 def pattern_1(df_train, df_test):
     ### 学習データをxとyに分割
@@ -67,6 +68,8 @@ def pattern_1(df_train, df_test):
     ## 対象：Sex, Cabin_flag, Embarked
     ## 方法：get_dummies関数
     all_x = pd.get_dummies(all_x, columns=['Sex', 'Cabin_flag', 'Embarked'])
+    # int型に変換する
+    all_x = general_processes.bool_to_int(all_x)
 
     ### 学習データとテストデータに再分割（参考：Kaggleで勝つ P138）
     processed_train_x = all_x.iloc[:train_x.shape[0], :].reset_index(drop=True)
@@ -188,6 +191,8 @@ def pattern_2(df_train, df_test):
     ## 対象：Sex, Cabin_flag, Embarked
     ## 方法：get_dummies関数
     all_x = pd.get_dummies(all_x, columns=['Sex', 'Cabin_flag', 'Embarked', 'Title', 'Pclass'])
+    # int型に変換する
+    all_x = general_processes.bool_to_int(all_x)
 
     ### 学習データとテストデータに再分割（参考：Kaggleで勝つ P138）
     processed_train_x = all_x.iloc[:train_x.shape[0], :].reset_index(drop=True)
@@ -319,14 +324,11 @@ def pattern_3(df_train, df_test):
     ## 方法：get_dummies関数
     all_x = pd.get_dummies(all_x, columns=['Sex', 'Embarked', 'Title', 'Pclass', 'Cabin'])
 
+    # int型に変換する
+    all_x = general_processes.bool_to_int(all_x)
+
     ### 学習データとテストデータに再分割（参考：Kaggleで勝つ P138）
     processed_train_x = all_x.iloc[:train_x.shape[0], :].reset_index(drop=True)
     processed_test_x = all_x.iloc[train_x.shape[0]:, :].reset_index(drop=True)
     processed_datasets = [processed_train_x, train_y, processed_test_x, id_test]
     return processed_datasets
-
-### この関数は汎用関数にしたい
-def bool_to_int(df):
-    bool_cols = df.select_dtypes(include='bool').columns
-    df[bool_cols] = df[bool_cols].astype(int)
-    return df
