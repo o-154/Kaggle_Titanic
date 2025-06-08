@@ -324,3 +324,9 @@ def pattern_3(df_train, df_test):
     processed_test_x = all_x.iloc[train_x.shape[0]:, :].reset_index(drop=True)
     processed_datasets = [processed_train_x, train_y, processed_test_x, id_test]
     return processed_datasets
+
+### この関数は汎用関数にしたい
+def bool_to_int(df):
+    bool_cols = df.select_dtypes(include='bool').columns
+    df[bool_cols] = df[bool_cols].astype(int)
+    return df
