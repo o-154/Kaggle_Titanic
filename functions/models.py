@@ -8,6 +8,8 @@ import random
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+import lightgbm as lgb
+
 from sklearn.ensemble import RandomForestClassifier as RFC
 from sklearn.metrics import classification_report
 from sklearn.metrics import confusion_matrix
@@ -21,6 +23,37 @@ from tensorflow.keras.layers import Dense, Dropout
 from tensorflow.keras.callbacks import EarlyStopping
 
 # from . import general_processes
+
+### 1. LightGBM
+def lgbm(x_train_val, y_train_val, x_test, id_test, \
+                  response_variable_name, features_number):
+    model_name = 'lgbm'
+
+    x_train,x_val,y_train,y_val = train_test_split(\
+    x_train_val, y_train_val, test_size=0.3, random_state=0\
+        )
+
+    lgb_params = {"objective": "binary", "netric": "binary_logloss", "verbosity": -1}
+    lgb_train = lgb.Dataset(x_train, y_train)
+
+    model = lgb.train(lgb_params, lgb_train)
+    y_val_pred = model.predict(x_val)
+    y_val_pred = [1 if pred > 0.5 else 0 for pred in y_val_pred]
+
+    accuracy = accuracy_score(y_val,y_val_pred)
+
+    ## 予測の実行
+    y_test_pred = model.predict(x_test)
+    y_test_pred = [1 if pred > 0.5 else 0 for pred in y_test_pred]
+    df_result = pd.concat([id_test, \
+                        pd.DataFrame(y_test_pred, columns=[response_variable_name])], \
+                            axis=1)
+    
+    ## csvとして保存
+    result_file_name = 'outputs/' + model_name + '_' + str(features_number+1) + '.csv'
+    df_result.to_csv(result_file_name, index=False)
+
+    return accuracy
 
 
 ### 2. ランダムフォレスト

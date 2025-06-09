@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from functions import specific_processes
 from functions import models
 
@@ -21,10 +22,10 @@ model_input_datasets.append(specific_processes.pattern_2(*original_datasets))
 model_input_datasets.append(specific_processes.pattern_3(*original_datasets))
 
 ### 予測の実行
-accuracy_list = []
+all_accuracies = []
 for i in range(len(model_input_datasets)):
-    i = 2 # for test
-    accuracy = models.newral_network(
+    feature_accuracy = []
+    accuracy = models.lgbm(
         model_input_datasets[i][0],
         model_input_datasets[i][1],
         model_input_datasets[i][2],
@@ -32,5 +33,18 @@ for i in range(len(model_input_datasets)):
         response_variable_name,
         i
     )
-    accuracy_list.append(accuracy)
-print(accuracy_list)
+    feature_accuracy.append(accuracy)
+
+    accuracy = models.random_forest(
+        model_input_datasets[i][0],
+        model_input_datasets[i][1],
+        model_input_datasets[i][2],
+        model_input_datasets[i][3],
+        response_variable_name,
+        i
+    )
+    feature_accuracy.append(accuracy)
+
+    all_accuracies.append(feature_accuracy)
+
+print(all_accuracies)
