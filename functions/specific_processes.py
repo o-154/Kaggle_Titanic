@@ -38,7 +38,21 @@ def pattern_1(df_train, df_test):
     pass    
         
     ### Age
-    pass
+    # 1. 各行の3カラムの組み合わせに対応する年齢の中央値を返す関数を定義する
+    def process_age(all_x, grouped_median_train):
+        def fill_age(row):
+            condition = (
+                (grouped_median_train['Sex'] == row['Sex']) & 
+                (grouped_median_train['Pclass'] == row['Pclass'])
+            )
+            return grouped_median_train[condition]['Age'].values[0]
+
+        all_x['Age'] = all_x.apply(lambda row: fill_age(row) if pd.isna(row['Age']) else row['Age'], axis=1)
+        return all_x
+    # 2. 呼び出し側（
+    grouped_train = all_x.iloc[:891].groupby(['Sex','Pclass'])
+    grouped_median_train = grouped_train.Age.median().reset_index()[['Sex', 'Pclass', 'Age']]
+    all_x = process_age(all_x, grouped_median_train)
 
     ### SibSp
     pass
@@ -53,7 +67,11 @@ def pattern_1(df_train, df_test):
     all_x = all_x.drop(columns=['Ticket'])
 
     ### Fare
-    pass
+    ## 全体の平均値で補間する
+    def process_fares(all_x):
+        all_x['Fare'] = all_x['Fare'].fillna(all_x.iloc[:891].Fare.mean())
+        return all_x
+    all_x = process_fares(all_x)
     
     ### Cabin
     ## 1. カラムの空白の有無をフラグ化
