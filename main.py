@@ -45,6 +45,16 @@ for i in range(len(model_input_datasets)):
     )
     feature_accuracy.append(accuracy)
 
+    accuracy = models.newral_network(
+        model_input_datasets[i][0],
+        model_input_datasets[i][1],
+        model_input_datasets[i][2],
+        model_input_datasets[i][3],
+        response_variable_name,
+        i
+    )
+    feature_accuracy.append(accuracy)
+
     all_accuracies.append(feature_accuracy)
 
 print(all_accuracies)

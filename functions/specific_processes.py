@@ -193,7 +193,11 @@ def pattern_2(df_train, df_test):
     all_x = all_x.drop(columns=['Ticket'])
 
     ### Fare
-    pass
+    ## 全体の平均値で補間する
+    def process_fares(all_x):
+        all_x['Fare'] = all_x['Fare'].fillna(all_x.iloc[:891].Fare.mean())
+        return all_x
+    all_x = process_fares(all_x)
 
     ### Cabin
     ## 1. カラムの空白の有無をフラグ化
